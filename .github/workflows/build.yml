@@ -42,7 +42,7 @@ jobs:
         dotnet publish -c Release -r win-x64 --self-contained -o publish
         
     - name: Create Release Archive
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: NSC-Winlator-win-x64
         path: src/NSC.Winlator/publish/
