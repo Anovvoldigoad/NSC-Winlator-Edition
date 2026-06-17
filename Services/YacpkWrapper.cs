@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 namespace NSC.Winlator.Services
 {
     public class YacpkWrapper

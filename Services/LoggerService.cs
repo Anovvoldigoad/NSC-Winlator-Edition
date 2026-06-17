@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 namespace NSC.Winlator.Services

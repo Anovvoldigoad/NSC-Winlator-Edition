@@ -1,3 +1,4 @@
+using System;
 namespace NSC.Winlator.Models
 {
     public class ProfileInfo
