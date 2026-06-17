@@ -1,0 +1,271 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                        📱 SETUP NSC WINLATOR DI HP                          ║
+║                           5 MENIT SETUP!                                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+🚀 PILIH CARA YANG TERMUDAH:
+═══════════════════════════════════════════════════════════════════════════════
+
+CARA 1: GITHUB ONLINE (TERMUDAH - RECOMMENDED)
+────────────────────────────────────────────────────────────────────────────
+Waktu: 2 menit
+Yang perlu: HP + Internet + Browser
+Langkah:
+  1. Buka: https://github.com/new
+  2. Buat repo baru: "NSC-Winlator-Edition"
+  3. Upload file (klik "uploading an existing file")
+  4. Drop semua file dari archive
+  5. GitHub Actions langsung build otomatis!
+  6. Buka tab "Actions" → lihat build
+  7. Tunggu 2 menit
+  8. Download dari "Artifacts"
+Hasil: File .exe siap pakai!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CARA 2: TERMUX (PALING POWER - TAPI AGAK RUMIT)
+────────────────────────────────────────────────────────────────────────────
+Waktu: 15 menit
+Yang perlu: HP Android + Termux app
+Langkah:
+  1. Install Termux dari Google Play
+  2. Buka Termux
+  3. Paste ini:
+     
+     pkg update && pkg upgrade -y
+     pkg install -y git wget unzip
+     pkg install -y dotnet-runtime dotnet-sdk
+
+  4. Tunggu ~10 menit (install dependencies)
+  5. Download project:
+     
+     mkdir ~/projects
+     cd ~/projects
+     wget https://github.com/YOUR_USERNAME/NSC-Winlator-Edition/archive/main.zip
+     unzip main.zip
+     cd NSC-Winlator-Edition-main
+
+  6. Build:
+     
+     cd src/NSC.Winlator
+     dotnet restore
+     dotnet build -c Release
+
+  7. Tunggu ~3 menit build
+  8. Output ada di: bin/Release/net8.0-windows/NSC.Winlator.exe
+Hasil: File executable siap pakai!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CARA 3: REPLIT (ONLINE - TERCEPAT TAPI TERBATAS)
+────────────────────────────────────────────────────────────────────────────
+Waktu: 5 menit
+Yang perlu: HP + Internet + Browser
+Langkah:
+  1. Buka: https://replit.com/new/csharp
+  2. Copy-paste code dari project
+  3. Click "Run"
+  4. Tunggu ~1 menit
+  5. Lihat hasil di console
+Hasil: Executable tapi terbatas storage
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ REKOMENDASI SAYA: CARA 1 (GITHUB)
+═══════════════════════════════════════════════════════════════════════════════
+
+Kenapa?
+  ✓ Termudah
+  ✓ Paling cepat
+  ✓ GitHub Actions handle build
+  ✓ Download siap pakai
+  ✓ Tidak perlu install apapun
+  ✓ Bisa dari HP saja!
+
+Langkah detail:
+
+STEP 1: Download File
+────────────────────────────────────────────────────────────────────────────
+1. Download: NSC-Winlator-Edition-Complete.zip
+2. Extract di HP (gunakan file manager)
+3. Lihat folder yang diekstrak
+
+
+STEP 2: Buat GitHub Repo
+────────────────────────────────────────────────────────────────────────────
+1. Buka: https://github.com (login dulu)
+2. Click "+" di kanan atas
+3. Pilih "New repository"
+4. Nama: NSC-Winlator-Edition
+5. Deskripsi: Mod Manager untuk Naruto Storm Connections
+6. Pilih "Public"
+7. Click "Create repository"
+
+
+STEP 3: Upload Semua File
+────────────────────────────────────────────────────────────────────────────
+1. Di repo GitHub yang baru dibuat
+2. Click "uploading an existing file"
+3. ATAU click "Add file" → "Upload files"
+4. Buka file manager HP
+5. Pilih semua file dari folder yang diekstrak
+6. Drop ke GitHub upload area
+7. Click "Commit changes"
+
+
+STEP 4: GitHub Actions Build Otomatis!
+────────────────────────────────────────────────────────────────────────────
+1. Tunggu ~2 detik
+2. Lihat tab "Actions"
+3. Lihat workflow "Build NSC Winlator Edition" berjalan
+4. Status akan berubah jadi ✓ dalam 2-3 menit
+5. Selesai build!
+
+
+STEP 5: Download Hasil Build
+────────────────────────────────────────────────────────────────────────────
+1. Buka tab "Actions" 
+2. Click workflow terbaru
+3. Scroll ke bawah → "Artifacts"
+4. Download: NSC-Winlator-win-x64
+5. File .zip berisi executable!
+
+
+STEP 6: Extract & Gunakan
+────────────────────────────────────────────────────────────────────────────
+1. Extract artifact zip
+2. Isi: NSC.Winlator.exe (+ semua file dependencies)
+3. Copy ke PC atau Winlator
+4. Run!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 PERBANDINGAN 3 CARA:
+═══════════════════════════════════════════════════════════════════════════════
+
+                 GitHub Online    Termux           Replit
+Setup time:      2 menit          15 menit         5 menit
+Install:         0 app            1 app            0 app
+Skill:           Sangat mudah     Sedang           Mudah
+Output:          Executable       Executable       Test only
+Recommended:     ✅ YES!          OK               Untuk testing
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 SEKARANG LANGSUNG MULAI!
+═══════════════════════════════════════════════════════════════════════════════
+
+OPSI A: Cara GitHub (TERMUDAH)
+────────────────────────────────────────────────────────────────────────────
+1. ✅ Download NSC-Winlator-Edition-Complete.zip
+2. ✅ Extract di HP
+3. ✅ Buka GitHub.com
+4. ✅ Create new repo
+5. ✅ Upload semua file
+6. ✅ Wait 2 minutes
+7. ✅ Download artifact
+8. ✅ DONE! 🎉
+
+
+OPSI B: Cara Termux (PALING POWER)
+────────────────────────────────────────────────────────────────────────────
+1. ✅ Install Termux dari Play Store
+2. ✅ Buka Termux
+3. ✅ Paste command setup
+4. ✅ Tunggu 10 menit install
+5. ✅ Clone repo GitHub
+6. ✅ Build dengan dotnet
+7. ✅ Copy file executable
+8. ✅ DONE! 🎉
+
+
+OPSI C: Cara Replit (TERCEPAT TAPI TERBATAS)
+────────────────────────────────────────────────────────────────────────────
+1. ✅ Buka Replit.com
+2. ✅ Create C# project
+3. ✅ Copy code dari project
+4. ✅ Click Run
+5. ✅ Lihat hasil
+6. ✅ DONE! 🎉
+
+═══════════════════════════════════════════════════════════════════════════════
+
+❓ PERTANYAAN SERING:
+═══════════════════════════════════════════════════════════════════════════════
+
+Q: Cara mana yang terbaik untuk HP?
+A: GITHUB ONLINE! Termudah, tercepat, tidak perlu install.
+
+Q: Berapa lama prosesnya?
+A: ~5-10 menit mulai dari download sampe executable siap.
+
+Q: Biaya berapa?
+A: GRATIS! GitHub free, Termux free, Replit free.
+
+Q: Apa yang dihasilkan?
+A: File .exe executable siap pakai untuk Windows/Winlator.
+
+Q: Bisa langsung jalankan di HP?
+A: Bisa kalau di Winlator. Atau transfer ke PC dulu.
+
+Q: Internet harus cepat?
+A: Tidak perlu. Bisa di WiFi maupun mobile data.
+
+Q: Kalau gagal gimana?
+A: Buka file TROUBLESHOOTING.md di archive.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎁 BONUS: FILE YANG SUDAH SIAP
+═══════════════════════════════════════════════════════════════════════════════
+
+Di archive sudah ada:
+  ✅ 27 file source code
+  ✅ 10 file dokumentasi
+  ✅ GitHub Actions workflows
+  ✅ Setup guides
+  ✅ Troubleshooting guide
+  ✅ Semua yang perlu!
+
+Tidak perlu coding! Upload saja ke GitHub!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 MULAI SEKARANG!
+═══════════════════════════════════════════════════════════════════════════════
+
+3 langkah:
+
+1️⃣ Download: NSC-Winlator-Edition-Complete.zip
+   Lokasi: /mnt/user-data/outputs/
+
+2️⃣ Pilih cara:
+   ✓ GitHub Online (RECOMMENDED)
+   ✓ Termux
+   ✓ Replit
+
+3️⃣ Ikuti langkah di atas
+
+SELESAI! 🎉
+
+═══════════════════════════════════════════════════════════════════════════════
+
+💬 NEED HELP?
+═══════════════════════════════════════════════════════════════════════════════
+
+Read:
+  - MOBILE_SETUP.md (detail untuk HP)
+  - GITHUB_ACTIONS_GUIDE.md (GitHub actions)
+  - QUICKSTART.md (quick reference)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Version: 1.0.0
+Status: READY FOR MOBILE
+Date: January 2025
+
+SELAMAT MULAI! 🚀
+
+Anda bisa build executable dari HP tanpa PC! 📱
+
+═══════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,151 @@
+name: Release Build NSC Winlator Edition
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Get version from tag
+      id: tag_name
+      run: |
+        $tag = "${{ github.ref }}" -replace 'refs/tags/', ''
+        echo "VERSION=$tag" >> $env:GITHUB_OUTPUT
+        
+    - name: Restore dependencies
+      run: |
+        cd src/NSC.Winlator
+        dotnet restore
+      
+    - name: Build Release
+      run: |
+        cd src/NSC.Winlator
+        dotnet build -c Release
+        
+    - name: Publish Self-Contained (x64)
+      run: |
+        cd src/NSC.Winlator
+        dotnet publish -c Release -r win-x64 --self-contained -o publish-x64
+        
+    - name: Publish Self-Contained (x86)
+      run: |
+        cd src/NSC.Winlator
+        dotnet publish -c Release -r win-x86 --self-contained -o publish-x86
+        
+    - name: Publish Framework-Dependent
+      run: |
+        cd src/NSC.Winlator
+        dotnet publish -c Release -o publish-framework
+        
+    - name: Create x64 Release Archive
+      uses: actions/upload-artifact@v3
+      with:
+        name: NSC-Winlator-${{ steps.tag_name.outputs.VERSION }}-win-x64
+        path: src/NSC.Winlator/publish-x64/
+        
+    - name: Create x86 Release Archive
+      uses: actions/upload-artifact@v3
+      with:
+        name: NSC-Winlator-${{ steps.tag_name.outputs.VERSION }}-win-x86
+        path: src/NSC.Winlator/publish-x86/
+        
+    - name: Create Framework-Dependent Archive
+      uses: actions/upload-artifact@v3
+      with:
+        name: NSC-Winlator-${{ steps.tag_name.outputs.VERSION }}-framework-dependent
+        path: src/NSC.Winlator/publish-framework/
+        
+    - name: Create Release Notes
+      id: release_notes
+      run: |
+        $version = "${{ steps.tag_name.outputs.VERSION }}"
+        $notes = @"
+        # NSC Winlator Edition $version
+        
+        ## Download
+        Choose one of the following:
+        
+        ### Standalone Builds (Recommended)
+        - **win-x64**: For Windows 10/11 64-bit (Recommended for most users)
+        - **win-x86**: For Windows 10/11 32-bit
+        
+        Both include .NET 8 runtime. No additional installation needed!
+        
+        ### Framework-Dependent
+        Requires .NET 8 Runtime to be installed separately.
+        
+        ## What's New in $version
+        - Initial release
+        - Complete mod management system
+        - All core features implemented
+        - Comprehensive documentation included
+        
+        ## Features
+        ✅ Mod detection & management
+        ✅ Mod installation (8 formats)
+        ✅ Profile management
+        ✅ Game backup/restore
+        ✅ Conflict detection
+        ✅ Load order management
+        ✅ YACpk compilation
+        ✅ Real-time logging
+        
+        ## System Requirements
+        - Windows 10/11 (native)
+        - Winlator (Android)
+        - Wine/Proton (Linux)
+        - 256MB RAM
+        - 1GB storage for mods
+        
+        ## Installation
+        1. Download the appropriate version for your system
+        2. Extract to your desired location
+        3. Run NSC.Winlator.exe
+        4. Configure your game path
+        5. Start managing mods!
+        
+        ## Documentation
+        See the included documentation for:
+        - Quick start guide
+        - Complete feature list
+        - Build instructions
+        - Technical architecture
+        - Troubleshooting
+        
+        ## Support
+        - Check included documentation
+        - Review application logs in %AppData%\NSC.Winlator\Logs\
+        - See source code on GitHub
+        
+        ## License
+        Provided as-is for educational and personal use.
+        "@
+        echo "NOTES=$notes" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        name: NSC Winlator Edition ${{ steps.tag_name.outputs.VERSION }}
+        body: ${{ steps.release_notes.outputs.NOTES }}
+        draft: false
+        prerelease: false
+        files: |
+          src/NSC.Winlator/publish-x64/**/*
+          src/NSC.Winlator/publish-x86/**/*
+          src/NSC.Winlator/publish-framework/**/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

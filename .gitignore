@@ -1,0 +1,51 @@
+# Build results
+bin/
+obj/
+out/
+build/
+dist/
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+*.userprefs
+*.user
+*.sln.user
+*.suo
+
+# Local history
+.history/
+.local/
+
+# Dependencies
+packages/
+.nuget/
+
+# Test results
+TestResults/
+*.trx
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Application data
+%AppData%/NSC.Winlator/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# NuGet
+.nupkg/
+
+# Application
+publish/
+release/
