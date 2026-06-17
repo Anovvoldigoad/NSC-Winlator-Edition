@@ -22,23 +22,23 @@ jobs:
         
     - name: Restore dependencies
       run: |
-        cd src/NSC.Winlator
+        cd .
         dotnet restore
       
     - name: Build project
       run: |
-        cd src/NSC.Winlator
+        cd .
         dotnet build -c Release
         
     - name: Run tests (if any)
       run: |
-        cd src/NSC.Winlator
+        cd .
         dotnet test --no-build --verbosity normal 2>/dev/null || echo "No tests found"
       continue-on-error: true
       
     - name: Publish Release Build
       run: |
-        cd src/NSC.Winlator
+        cd .
         dotnet publish -c Release -r win-x64 --self-contained -o publish
         
     - name: Create Release Archive
