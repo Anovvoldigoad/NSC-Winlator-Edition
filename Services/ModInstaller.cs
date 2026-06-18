@@ -126,7 +126,7 @@ namespace NSC.Winlator.Services
             {
                 foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
                 {
-                    entry.WriteToDirectory(extractPath, new ExtractionOptions { ExtractFullPath = true, Overwrite = OverwriteMode.Always });
+                    entry.WriteToDirectory(extractPath, new ExtractionOptions { ExtractFullPath = true });
                 }
             }
         }
