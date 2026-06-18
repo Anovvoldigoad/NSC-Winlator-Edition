@@ -1,6 +1,4 @@
-cat > NSC.Winlator.csproj << 'EOF'
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -14,11 +12,8 @@ cat > NSC.Winlator.csproj << 'EOF'
     <Authors>NSC Winlator Team</Authors>
     <Description>Lightweight Mod Manager for Naruto Storm Connections</Description>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.37.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
-
 </Project>
-EOF
