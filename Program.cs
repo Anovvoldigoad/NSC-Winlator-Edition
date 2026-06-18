@@ -1,3 +1,5 @@
+using System;
+using System.Windows.Forms;
 using NSC.Winlator.Forms;
 using NSC.Winlator.Infrastructure;
 
