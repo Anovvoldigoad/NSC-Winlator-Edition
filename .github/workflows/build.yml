@@ -29,6 +29,15 @@ jobs:
       run: |
         cd .
         dotnet build -c Release
+
+    - name: Publish Release
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NSC-Winlator-win-x64
+          path: ./publish
         
     - name: Run tests (if any)
       run: |
