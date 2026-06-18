@@ -42,7 +42,7 @@ namespace NSC.Winlator.Services
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to initialize logger: {ex.Message}");
+                Console.WriteLine($"Failed to initialize logger: {ex.Message}");
             }
         }
 
