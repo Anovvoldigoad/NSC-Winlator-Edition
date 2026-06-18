@@ -16,31 +16,12 @@ namespace NSC.Winlator
                 AppBootstrap.Initialize();
                 Console.WriteLine("✓ Bootstrap complete");
                 Console.WriteLine("✓ Storage initialized");
+                Console.WriteLine($"✓ App folder: {AppBootstrap.ApplicationFolder}");
                 Console.WriteLine("\nMod Manager Ready!");
                 Console.WriteLine("Type 'help' for commands...\n");
                 
-                // Simple command loop
-                while (true)
-                {
-                    Console.Write("> ");
-                    string? input = Console.ReadLine();
-                    if (string.IsNullOrEmpty(input)) continue;
-                    
-                    switch (input.ToLower())
-                    {
-                        case "help":
-                            Console.WriteLine("Commands: list, exit");
-                            break;
-                        case "list":
-                            Console.WriteLine("Feature list coming soon...");
-                            break;
-                        case "exit":
-                            return;
-                        default:
-                            Console.WriteLine("Unknown command. Type 'help'");
-                            break;
-                    }
-                }
+                CommandHandler handler = new CommandHandler();
+                handler.Run();
             }
             catch (Exception ex)
             {
