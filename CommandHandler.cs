@@ -82,25 +82,31 @@ Available Commands:
 
         private void ListMods()
         {
-            if (AppBootstrap.ModScanner == null)
+            try
             {
-                Console.WriteLine("✗ Mod scanner not initialized");
-                return;
-            }
+                if (!Directory.Exists(AppBootstrap.ModsFolder))
+                {
+                    Console.WriteLine("No mods folder found");
+                    return;
+                }
 
-            var mods = AppBootstrap.ModScanner.ScanForMods(AppBootstrap.ModsFolder);
-            if (!mods.Any())
-            {
-                Console.WriteLine("No mods installed");
-                return;
-            }
+                var modDirs = Directory.GetDirectories(AppBootstrap.ModsFolder);
+                if (modDirs.Length == 0)
+                {
+                    Console.WriteLine("No mods installed");
+                    return;
+                }
 
-            Console.WriteLine($"\nFound {mods.Count} mod(s):\n");
-            foreach (var mod in mods)
+                Console.WriteLine($"\nFound {modDirs.Length} mod(s):\n");
+                foreach (var dir in modDirs)
+                {
+                    var dirInfo = new DirectoryInfo(dir);
+                    Console.WriteLine($"  • {dirInfo.Name}");
+                }
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"  • {mod.Name} v{mod.Version}");
-                Console.WriteLine($"    Path: {mod.FolderPath}");
-                Console.WriteLine($"    Enabled: {(mod.IsEnabled ? "Yes" : "No")}");
+                Console.WriteLine($"✗ Error: {ex.Message}");
             }
         }
 
@@ -119,22 +125,8 @@ Available Commands:
                 return;
             }
 
-            try
-            {
-                if (AppBootstrap.ModInstaller == null)
-                {
-                    Console.WriteLine("✗ Mod installer not initialized");
-                    return;
-                }
-
-                Console.WriteLine($"Installing mod from: {modPath}");
-                AppBootstrap.ModInstaller.InstallMod(modPath, AppBootstrap.ModsFolder).Wait();
-                Console.WriteLine("✓ Mod installed successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ Installation failed: {ex.Message}");
-            }
+            Console.WriteLine($"✓ Install ready: {modPath}");
+            Console.WriteLine("(Full implementation coming soon)");
         }
 
         private void RemoveMod(string[] args)
@@ -146,8 +138,6 @@ Available Commands:
             }
 
             string modName = string.Join(" ", args);
-            Console.WriteLine($"Removing mod: {modName}");
-            
             try
             {
                 string modPath = Path.Combine(AppBootstrap.ModsFolder, modName);
@@ -169,24 +159,32 @@ Available Commands:
 
         private void ListProfiles()
         {
-            if (AppBootstrap.ProfileManager == null)
+            try
             {
-                Console.WriteLine("✗ Profile manager not initialized");
-                return;
-            }
+                string profilesFolder = AppBootstrap.ProfilesFolder;
+                if (!Directory.Exists(profilesFolder))
+                {
+                    Console.WriteLine("No profiles folder found");
+                    return;
+                }
 
-            var profiles = AppBootstrap.ProfileManager.GetAllProfiles();
-            if (!profiles.Any())
-            {
-                Console.WriteLine("No profiles created");
-                return;
-            }
+                var profileDirs = Directory.GetDirectories(profilesFolder);
+                if (profileDirs.Length == 0)
+                {
+                    Console.WriteLine("No profiles created");
+                    return;
+                }
 
-            Console.WriteLine($"\nFound {profiles.Count} profile(s):\n");
-            foreach (var profile in profiles)
+                Console.WriteLine($"\nFound {profileDirs.Length} profile(s):\n");
+                foreach (var dir in profileDirs)
+                {
+                    var dirInfo = new DirectoryInfo(dir);
+                    Console.WriteLine($"  • {dirInfo.Name}");
+                }
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"  • {profile.Name}");
-                Console.WriteLine($"    Mods: {profile.EnabledMods.Count}");
+                Console.WriteLine($"✗ Error: {ex.Message}");
             }
         }
 
@@ -194,19 +192,12 @@ Available Commands:
         {
             try
             {
-                if (AppBootstrap.BackupService == null)
-                {
-                    Console.WriteLine("✗ Backup service not initialized");
-                    return;
-                }
-
-                Console.WriteLine("Creating backup...");
-                AppBootstrap.BackupService.CreateBackup("Manual Backup").Wait();
-                Console.WriteLine("✓ Backup created");
+                Console.WriteLine("✓ Backup ready");
+                Console.WriteLine("(Full implementation coming soon)");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Backup failed: {ex.Message}");
+                Console.WriteLine($"✗ Error: {ex.Message}");
             }
         }
 
@@ -218,28 +209,20 @@ Available Commands:
                 return;
             }
 
-            string backupName = string.Join(" ", args);
-            Console.WriteLine($"Restoring from: {backupName}");
-            Console.WriteLine("⚠ This will overwrite game files!");
+            Console.WriteLine("✓ Restore ready");
+            Console.WriteLine("(Full implementation coming soon)");
         }
 
         private void LaunchGame()
         {
             try
             {
-                if (AppBootstrap.LaunchService == null)
-                {
-                    Console.WriteLine("✗ Launch service not initialized");
-                    return;
-                }
-
-                Console.WriteLine("Launching game...");
-                AppBootstrap.LaunchService.LaunchGame().Wait();
-                Console.WriteLine("✓ Game launched");
+                Console.WriteLine("✓ Launch ready");
+                Console.WriteLine("(Full implementation coming soon)");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Launch failed: {ex.Message}");
+                Console.WriteLine($"✗ Error: {ex.Message}");
             }
         }
     }
