@@ -68,13 +68,13 @@ namespace NSC.Winlator
         {
             Console.WriteLine(@"
 Commands:
-  setgame <path>      - Set game folder
-  list                - List installed mods
-  install <path>      - Install mod
-  remove <name>       - Remove mod
-  launch              - Launch game (vanilla)
-  compile             - Compile mods + launch
-  exit                - Exit
+  setgame <path>    - Set game folder
+  list              - List installed mods
+  install <path>    - Install mod
+  remove <name>     - Remove mod
+  launch            - Launch game (vanilla)
+  compile           - Compile mods + launch
+  exit              - Exit
 ");
         }
 
@@ -87,9 +87,9 @@ Commands:
             }
             gameFolder = string.Join(" ", args);
             if (Directory.Exists(gameFolder))
-                Console.WriteLine($"✓ Game folder set: {gameFolder}");
+                Console.WriteLine($"✓ Game folder: {gameFolder}");
             else
-                Console.WriteLine("✗ Path not found");
+                Console.WriteLine("✗ Not found");
         }
 
         private void ListMods()
@@ -97,15 +97,13 @@ Commands:
             try
             {
                 var modDirs = Directory.GetDirectories(AppBootstrap.ModsFolder);
-                Console.WriteLine($"\nFound {modDirs.Length} mod(s):\n");
+                Console.WriteLine($"\n{modDirs.Length} mod(s):\n");
                 foreach (var dir in modDirs)
-                {
                     Console.WriteLine($"  • {Path.GetFileName(dir)}");
-                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error: {ex.Message}");
+                Console.WriteLine($"✗ {ex.Message}");
             }
         }
 
@@ -113,26 +111,18 @@ Commands:
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: install <path-to-mod.nsc>");
-                return;
-            }
-
-            string modPath = args[0];
-            if (!File.Exists(modPath))
-            {
-                Console.WriteLine($"✗ File not found: {modPath}");
+                Console.WriteLine("Usage: install <path>");
                 return;
             }
 
             try
             {
-                Console.WriteLine($"Installing mod from: {modPath}");
-                await AppBootstrap.ModInstaller!.InstallMod(modPath, AppBootstrap.ModsFolder);
-                Console.WriteLine("✓ Mod installed");
+                await AppBootstrap.ModInstaller!.InstallMod(args[0], AppBootstrap.ModsFolder);
+                Console.WriteLine("✓ Installed");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Installation failed: {ex.Message}");
+                Console.WriteLine($"✗ {ex.Message}");
             }
         }
 
@@ -140,27 +130,24 @@ Commands:
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: remove <mod-name>");
+                Console.WriteLine("Usage: remove <name>");
                 return;
             }
 
-            string modName = string.Join(" ", args);
             try
             {
-                string modPath = Path.Combine(AppBootstrap.ModsFolder, modName);
+                string modPath = Path.Combine(AppBootstrap.ModsFolder, string.Join(" ", args));
                 if (Directory.Exists(modPath))
                 {
                     Directory.Delete(modPath, true);
-                    Console.WriteLine("✓ Mod removed");
+                    Console.WriteLine("✓ Removed");
                 }
                 else
-                {
-                    Console.WriteLine("✗ Mod not found");
-                }
+                    Console.WriteLine("✗ Not found");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error: {ex.Message}");
+                Console.WriteLine($"✗ {ex.Message}");
             }
         }
 
@@ -168,7 +155,7 @@ Commands:
         {
             if (string.IsNullOrEmpty(gameFolder))
             {
-                Console.WriteLine("✗ Set game folder first: setgame <path>");
+                Console.WriteLine("✗ setgame <path> first");
                 return;
             }
 
@@ -177,17 +164,16 @@ Commands:
                 var exeFiles = Directory.GetFiles(gameFolder, "*.exe");
                 if (exeFiles.Length == 0)
                 {
-                    Console.WriteLine($"✗ No .exe found in: {gameFolder}");
+                    Console.WriteLine("✗ No .exe found");
                     return;
                 }
 
-                Console.WriteLine($"Launching: {exeFiles[0]}");
+                Console.WriteLine("✓ Launching...");
                 System.Diagnostics.Process.Start(exeFiles[0]);
-                Console.WriteLine("✓ Game launched");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Launch failed: {ex.Message}");
+                Console.WriteLine($"✗ {ex.Message}");
             }
             await Task.CompletedTask;
         }
@@ -196,7 +182,7 @@ Commands:
         {
             if (string.IsNullOrEmpty(gameFolder))
             {
-                Console.WriteLine("✗ Set game folder first: setgame <path>");
+                Console.WriteLine("✗ setgame <path> first");
                 return;
             }
 
@@ -205,7 +191,7 @@ Commands:
                 var modDirs = Directory.GetDirectories(AppBootstrap.ModsFolder);
                 if (modDirs.Length == 0)
                 {
-                    Console.WriteLine("No mods to compile. Launching vanilla...");
+                    Console.WriteLine("No mods. Launching vanilla...");
                     await LaunchGame();
                     return;
                 }
@@ -214,60 +200,28 @@ Commands:
 
                 string tempOutput = Path.Combine(Path.GetTempPath(), "nsc_compiled.cpk");
                 
-                // Create workspace
-                string workspace = Path.Combine(Path.GetTempPath(), $"nsc_compile_{Guid.NewGuid()}");
-                Directory.CreateDirectory(workspace);
-
-                try
+                // Compile each mod
+                foreach (var modDir in modDirs)
                 {
-                    // Merge mod files
-                    Console.WriteLine("Merging mod files...");
-                    foreach (var modDir in modDirs)
+                    string modName = Path.GetFileName(modDir);
+                    Console.WriteLine($"  • {modName}");
+                    
+                    try
                     {
-                        string modName = Path.GetFileName(modDir);
-                        Console.WriteLine($"  Merging: {modName}");
-                        
-                        // Copy mod files to workspace
-                        foreach (var file in Directory.GetFiles(modDir, "*", SearchOption.AllDirectories))
-                        {
-                            if (Path.GetFileName(file) == "mod_config.ini") continue;
-                            
-                            string relativePath = Path.GetRelativePath(modDir, file);
-                            string targetPath = Path.Combine(workspace, relativePath);
-                            Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
-                            File.Copy(file, targetPath, overwrite: true);
-                        }
+                        await AppBootstrap.CompilerService!.CompileModToCpk(modDir, tempOutput);
                     }
-
-                    // Compile with YACpk
-                    Console.WriteLine("Compiling with YACpk...");
-                    if (AppBootstrap.CompilerService != null)
+                    catch (Exception ex)
                     {
-                        bool success = await AppBootstrap.CompilerService.CompileMods(
-                            modDirs.Select(d => new Models.ModInfo { Name = Path.GetFileName(d), ModFolder = d, Enabled = true }).ToList(),
-                            tempOutput
-                        );
-
-                        if (success)
-                        {
-                            Console.WriteLine("✓ Compilation complete");
-                            await LaunchGame();
-                        }
-                        else
-                        {
-                            Console.WriteLine("✗ Compilation failed");
-                        }
+                        Console.WriteLine($"    ✗ {ex.Message}");
                     }
                 }
-                finally
-                {
-                    if (Directory.Exists(workspace))
-                        Directory.Delete(workspace, true);
-                }
+
+                Console.WriteLine("✓ Compiled. Launching...");
+                await LaunchGame();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error: {ex.Message}");
+                Console.WriteLine($"✗ {ex.Message}");
             }
         }
     }
