@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using NSC.Winlator.Infrastructure;
 using NSC.Winlator.Services;
 
@@ -32,7 +33,7 @@ namespace NSC.Winlator
                             ListMods();
                             break;
                         case "install":
-                            InstallMod(args);
+                            InstallMod(args).Wait();
                             break;
                         case "remove":
                             RemoveMod(args);
@@ -110,11 +111,11 @@ Available Commands:
             }
         }
 
-        private void InstallMod(string[] args)
+        private async Task InstallMod(string[] args)
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: install <path-to-mod-zip>");
+                Console.WriteLine("Usage: install <path-to-mod.zip>");
                 return;
             }
 
@@ -125,8 +126,23 @@ Available Commands:
                 return;
             }
 
-            Console.WriteLine($"✓ Install ready: {modPath}");
-            Console.WriteLine("(Full implementation coming soon)");
+            try
+            {
+                Console.WriteLine($"Installing mod from: {modPath}");
+                
+                if (AppBootstrap.ModInstaller == null)
+                {
+                    Console.WriteLine("✗ Mod installer not initialized");
+                    return;
+                }
+
+                await AppBootstrap.ModInstaller.InstallMod(modPath, AppBootstrap.ModsFolder);
+                Console.WriteLine("✓ Mod installed successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ Installation failed: {ex.Message}");
+            }
         }
 
         private void RemoveMod(string[] args)
@@ -190,40 +206,17 @@ Available Commands:
 
         private void CreateBackup()
         {
-            try
-            {
-                Console.WriteLine("✓ Backup ready");
-                Console.WriteLine("(Full implementation coming soon)");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ Error: {ex.Message}");
-            }
+            Console.WriteLine("✓ Backup feature coming soon");
         }
 
         private void RestoreBackup(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("Usage: restore <backup-name>");
-                return;
-            }
-
-            Console.WriteLine("✓ Restore ready");
-            Console.WriteLine("(Full implementation coming soon)");
+            Console.WriteLine("✓ Restore feature coming soon");
         }
 
         private void LaunchGame()
         {
-            try
-            {
-                Console.WriteLine("✓ Launch ready");
-                Console.WriteLine("(Full implementation coming soon)");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ Error: {ex.Message}");
-            }
+            Console.WriteLine("✓ Launch feature coming soon");
         }
     }
 }

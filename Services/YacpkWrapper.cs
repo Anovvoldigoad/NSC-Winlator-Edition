@@ -1,96 +1,85 @@
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+
 namespace NSC.Winlator.Services
 {
     public class YacpkWrapper
     {
-        private string _yacpkPath = string.Empty;
+        private readonly string _yacpkPath;
 
-        public void SetToolPath(string toolPath)
+        public YacpkWrapper(string toolsFolder)
         {
-            _yacpkPath = toolPath;
-            
-            if (!File.Exists(toolPath))
-            {
-                LoggerService.LogWarning($"YACpk tool not found: {toolPath}");
-            }
-        }
-
-        public bool ValidateTool()
-        {
-            if (string.IsNullOrEmpty(_yacpkPath))
-            {
-                LoggerService.LogWarning("YACpk tool path not set");
-                return false;
-            }
-
+            _yacpkPath = Path.Combine(toolsFolder, "YACpkTool.exe");
             if (!File.Exists(_yacpkPath))
             {
-                LoggerService.LogError($"YACpk tool not found: {_yacpkPath}");
-                return false;
+                throw new FileNotFoundException($"YACpkTool.exe not found at {_yacpkPath}");
             }
-
-            LoggerService.LogInfo($"YACpk tool validated: {_yacpkPath}");
-            return true;
         }
 
-        public bool ExecuteCompile(string inputPath, string outputPath, string parameters = "")
+        /// <summary>
+        /// Compile mod folder to CPK file
+        /// </summary>
+        public async Task<string> CompileMod(string inputFolder, string outputCpk)
         {
-            if (!ValidateTool())
-                return false;
+            if (!Directory.Exists(inputFolder))
+                throw new DirectoryNotFoundException($"Input folder not found: {inputFolder}");
 
-            if (!Directory.Exists(inputPath))
+            return await RunYacpkCommand($"-P -i \"{inputFolder}\" -o \"{outputCpk}\"");
+        }
+
+        /// <summary>
+        /// Extract CPK file to folder
+        /// </summary>
+        public async Task<string> ExtractCpk(string inputCpk, string outputFolder)
+        {
+            if (!File.Exists(inputCpk))
+                throw new FileNotFoundException($"CPK file not found: {inputCpk}");
+
+            return await RunYacpkCommand($"-X -i \"{inputCpk}\" -o \"{outputFolder}\"");
+        }
+
+        /// <summary>
+        /// List CPK contents
+        /// </summary>
+        public async Task<string> ListCpkContents(string inputCpk)
+        {
+            if (!File.Exists(inputCpk))
+                throw new FileNotFoundException($"CPK file not found: {inputCpk}");
+
+            return await RunYacpkCommand($"-L -i \"{inputCpk}\"");
+        }
+
+        private async Task<string> RunYacpkCommand(string arguments)
+        {
+            var psi = new ProcessStartInfo
             {
-                LoggerService.LogError($"Input path not found: {inputPath}");
-                return false;
-            }
+                FileName = _yacpkPath,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-            try
+            using (var process = Process.Start(psi))
             {
-                LoggerService.LogCompile($"Starting YACpk compile: {inputPath}");
+                if (process == null)
+                    throw new InvalidOperationException("Failed to start YACpkTool process");
 
-                ProcessStartInfo psi = new()
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+
+                await Task.Run(() => process.WaitForExit());
+
+                if (process.ExitCode != 0)
                 {
-                    FileName = _yacpkPath,
-                    Arguments = $"\"{inputPath}\" \"{outputPath}\" {parameters}",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
-
-                using (Process process = Process.Start(psi))
-                {
-                    if (process == null)
-                    {
-                        LoggerService.LogError("Failed to start YACpk process");
-                        return false;
-                    }
-
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-                    process.WaitForExit();
-
-                    if (process.ExitCode == 0)
-                    {
-                        LoggerService.LogCompile($"YACpk compile completed successfully");
-                        if (!string.IsNullOrEmpty(output))
-                            LoggerService.LogCompile(output);
-                        return true;
-                    }
-                    else
-                    {
-                        LoggerService.LogError($"YACpk compile failed with code {process.ExitCode}");
-                        if (!string.IsNullOrEmpty(error))
-                            LoggerService.LogError(error);
-                        return false;
-                    }
+                    throw new InvalidOperationException(
+                        $"YACpkTool failed with exit code {process.ExitCode}\n{error}");
                 }
-            }
-            catch (Exception ex)
-            {
-                LoggerService.LogError("Failed to execute YACpk compile", ex);
-                return false;
+
+                return output;
             }
         }
     }
