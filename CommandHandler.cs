@@ -10,6 +10,8 @@ namespace NSC.Winlator
 {
     public class CommandHandler
     {
+        private string? gameFolder;
+
         public void Run()
         {
             while (true)
@@ -29,6 +31,9 @@ namespace NSC.Winlator
                         case "help":
                             ShowHelp();
                             break;
+                        case "setgame":
+                            SetGameFolder(args);
+                            break;
                         case "list":
                             ListMods();
                             break;
@@ -38,17 +43,11 @@ namespace NSC.Winlator
                         case "remove":
                             RemoveMod(args);
                             break;
-                        case "profiles":
-                            ListProfiles();
-                            break;
-                        case "backup":
-                            CreateBackup();
-                            break;
-                        case "restore":
-                            RestoreBackup(args);
-                            break;
                         case "launch":
-                            LaunchGame();
+                            LaunchGame().Wait();
+                            break;
+                        case "compile":
+                            CompileAndLaunch().Wait();
                             break;
                         case "exit":
                             return;
@@ -68,41 +67,40 @@ namespace NSC.Winlator
         private void ShowHelp()
         {
             Console.WriteLine(@"
-Available Commands:
-  list              - List all installed mods
-  install <path>   - Install mod from ZIP file
-  remove <name>    - Remove mod by name
-  profiles          - List all profiles
-  backup            - Create game backup
-  restore <backup>  - Restore from backup
-  launch            - Launch game with mods
-  help              - Show this help
-  exit              - Exit application
+Commands:
+  setgame <path>      - Set game folder
+  list                - List installed mods
+  install <path>      - Install mod
+  remove <name>       - Remove mod
+  launch              - Launch game (vanilla)
+  compile             - Compile mods + launch
+  exit                - Exit
 ");
+        }
+
+        private void SetGameFolder(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Usage: setgame <path>");
+                return;
+            }
+            gameFolder = string.Join(" ", args);
+            if (Directory.Exists(gameFolder))
+                Console.WriteLine($"✓ Game folder set: {gameFolder}");
+            else
+                Console.WriteLine("✗ Path not found");
         }
 
         private void ListMods()
         {
             try
             {
-                if (!Directory.Exists(AppBootstrap.ModsFolder))
-                {
-                    Console.WriteLine("No mods folder found");
-                    return;
-                }
-
                 var modDirs = Directory.GetDirectories(AppBootstrap.ModsFolder);
-                if (modDirs.Length == 0)
-                {
-                    Console.WriteLine("No mods installed");
-                    return;
-                }
-
                 Console.WriteLine($"\nFound {modDirs.Length} mod(s):\n");
                 foreach (var dir in modDirs)
                 {
-                    var dirInfo = new DirectoryInfo(dir);
-                    Console.WriteLine($"  • {dirInfo.Name}");
+                    Console.WriteLine($"  • {Path.GetFileName(dir)}");
                 }
             }
             catch (Exception ex)
@@ -115,7 +113,7 @@ Available Commands:
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: install <path-to-mod.zip>");
+                Console.WriteLine("Usage: install <path-to-mod.nsc>");
                 return;
             }
 
@@ -129,15 +127,8 @@ Available Commands:
             try
             {
                 Console.WriteLine($"Installing mod from: {modPath}");
-                
-                if (AppBootstrap.ModInstaller == null)
-                {
-                    Console.WriteLine("✗ Mod installer not initialized");
-                    return;
-                }
-
-                await AppBootstrap.ModInstaller.InstallMod(modPath, AppBootstrap.ModsFolder);
-                Console.WriteLine("✓ Mod installed successfully");
+                await AppBootstrap.ModInstaller!.InstallMod(modPath, AppBootstrap.ModsFolder);
+                Console.WriteLine("✓ Mod installed");
             }
             catch (Exception ex)
             {
@@ -173,50 +164,111 @@ Available Commands:
             }
         }
 
-        private void ListProfiles()
+        private async Task LaunchGame()
         {
+            if (string.IsNullOrEmpty(gameFolder))
+            {
+                Console.WriteLine("✗ Set game folder first: setgame <path>");
+                return;
+            }
+
             try
             {
-                string profilesFolder = AppBootstrap.ProfilesFolder;
-                if (!Directory.Exists(profilesFolder))
+                var exeFiles = Directory.GetFiles(gameFolder, "*.exe");
+                if (exeFiles.Length == 0)
                 {
-                    Console.WriteLine("No profiles folder found");
+                    Console.WriteLine($"✗ No .exe found in: {gameFolder}");
                     return;
                 }
 
-                var profileDirs = Directory.GetDirectories(profilesFolder);
-                if (profileDirs.Length == 0)
+                Console.WriteLine($"Launching: {exeFiles[0]}");
+                System.Diagnostics.Process.Start(exeFiles[0]);
+                Console.WriteLine("✓ Game launched");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ Launch failed: {ex.Message}");
+            }
+            await Task.CompletedTask;
+        }
+
+        private async Task CompileAndLaunch()
+        {
+            if (string.IsNullOrEmpty(gameFolder))
+            {
+                Console.WriteLine("✗ Set game folder first: setgame <path>");
+                return;
+            }
+
+            try
+            {
+                var modDirs = Directory.GetDirectories(AppBootstrap.ModsFolder);
+                if (modDirs.Length == 0)
                 {
-                    Console.WriteLine("No profiles created");
+                    Console.WriteLine("No mods to compile. Launching vanilla...");
+                    await LaunchGame();
                     return;
                 }
 
-                Console.WriteLine($"\nFound {profileDirs.Length} profile(s):\n");
-                foreach (var dir in profileDirs)
+                Console.WriteLine($"Compiling {modDirs.Length} mod(s)...");
+
+                string tempOutput = Path.Combine(Path.GetTempPath(), "nsc_compiled.cpk");
+                
+                // Create workspace
+                string workspace = Path.Combine(Path.GetTempPath(), $"nsc_compile_{Guid.NewGuid()}");
+                Directory.CreateDirectory(workspace);
+
+                try
                 {
-                    var dirInfo = new DirectoryInfo(dir);
-                    Console.WriteLine($"  • {dirInfo.Name}");
+                    // Merge mod files
+                    Console.WriteLine("Merging mod files...");
+                    foreach (var modDir in modDirs)
+                    {
+                        string modName = Path.GetFileName(modDir);
+                        Console.WriteLine($"  Merging: {modName}");
+                        
+                        // Copy mod files to workspace
+                        foreach (var file in Directory.GetFiles(modDir, "*", SearchOption.AllDirectories))
+                        {
+                            if (Path.GetFileName(file) == "mod_config.ini") continue;
+                            
+                            string relativePath = Path.GetRelativePath(modDir, file);
+                            string targetPath = Path.Combine(workspace, relativePath);
+                            Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+                            File.Copy(file, targetPath, overwrite: true);
+                        }
+                    }
+
+                    // Compile with YACpk
+                    Console.WriteLine("Compiling with YACpk...");
+                    if (AppBootstrap.CompilerService != null)
+                    {
+                        bool success = await AppBootstrap.CompilerService.CompileMods(
+                            modDirs.Select(d => new Models.ModInfo { Name = Path.GetFileName(d), ModFolder = d, Enabled = true }).ToList(),
+                            tempOutput
+                        );
+
+                        if (success)
+                        {
+                            Console.WriteLine("✓ Compilation complete");
+                            await LaunchGame();
+                        }
+                        else
+                        {
+                            Console.WriteLine("✗ Compilation failed");
+                        }
+                    }
+                }
+                finally
+                {
+                    if (Directory.Exists(workspace))
+                        Directory.Delete(workspace, true);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"✗ Error: {ex.Message}");
             }
-        }
-
-        private void CreateBackup()
-        {
-            Console.WriteLine("✓ Backup feature coming soon");
-        }
-
-        private void RestoreBackup(string[] args)
-        {
-            Console.WriteLine("✓ Restore feature coming soon");
-        }
-
-        private void LaunchGame()
-        {
-            Console.WriteLine("✓ Launch feature coming soon");
         }
     }
 }
