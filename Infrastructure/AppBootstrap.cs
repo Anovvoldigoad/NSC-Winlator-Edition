@@ -69,8 +69,7 @@ namespace NSC.Winlator.Infrastructure
                 LaunchService = new LaunchService();
                 ModInstaller = new ModInstaller();
 
-                CompilerService = new CompilerService();
-                CompilerService.Initialize(ToolsFolder);
+                CompilerService = new CompilerService(ToolsFolder);
 
                 LoggerService.LogSuccess("All services initialized successfully");
             }
