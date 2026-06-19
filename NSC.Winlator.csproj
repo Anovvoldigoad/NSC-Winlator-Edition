@@ -10,13 +10,16 @@
     <RootNamespace>NSC.Winlator</RootNamespace>
     <AssemblyName>NSC.Winlator</AssemblyName>
     <Version>1.0.0</Version>
-    <Authors>NSC Winlator Team</Authors>
-    <Description>Lightweight Mod Manager for Naruto Storm Connections</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.37.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Libraries/LibCPK/LibCPK.csproj" />
+    <ProjectReference Include="Libraries/LibCRIComp/LibCRIComp.csproj" />
   </ItemGroup>
 
 </Project>
