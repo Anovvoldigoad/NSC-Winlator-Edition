@@ -4,7 +4,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>false</UseWPF>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <RootNamespace>NSC.Winlator</RootNamespace>
@@ -15,11 +14,6 @@
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.37.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="Libraries/LibCPK/LibCPK.csproj" />
-    <ProjectReference Include="Libraries/LibCRIComp/LibCRIComp.csproj" />
   </ItemGroup>
 
 </Project>
