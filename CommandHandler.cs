@@ -208,7 +208,7 @@ Commands:
                     
                     try
                     {
-                        await AppBootstrap.CompilerService!.CompileModToCpk(modDir, tempOutput);
+                        AppBootstrap.CompilerService!.SetGameFolder(gameFolder); await AppBootstrap.CompilerService!.CompileModToCpk(modDir, tempOutput);
                     }
                     catch (Exception ex)
                     {
