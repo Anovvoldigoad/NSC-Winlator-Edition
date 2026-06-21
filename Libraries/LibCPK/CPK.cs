@@ -8,7 +8,12 @@ namespace NSC.Winlator.Libraries.LibCPK
 {
     public class FileEntry
     {
-        public string? FileName { get; set; }
+        public object? DirName { get; set; }
+        public object? FileName { get; set; }
+        public object? FileSize { get; set; }
+        public Type? FileSizeType { get; set; }
+        public object? ExtractSize { get; set; }
+        public Type? ExtractSizeType { get; set; }
         public byte[]? data { get; set; }
     }
 
@@ -20,7 +25,6 @@ namespace NSC.Winlator.Libraries.LibCPK
 
         public bool Read(byte[] data)
         {
-            // TODO: implement CPK reading
             return false;
         }
 
