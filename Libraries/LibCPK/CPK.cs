@@ -1414,7 +1414,11 @@ namespace LibCPK
         public float ufloat { get; set; }
         public string str { get; set; }
         public byte[] data { get; set; }
+        }
+    }
 
+    public class FileEntry
+    {
 
         public bool RebuildCPK(string originalCpkPath, string modFolderPath, string outputCpkPath)
         {
