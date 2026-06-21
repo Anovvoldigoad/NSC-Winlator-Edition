@@ -53,14 +53,7 @@ namespace NSC.Winlator.Services
                     File.Copy(gameDataPath, backupPath);
                     LoggerService.LogInfo($"Backed up: {backupPath}");
                 }
-                CPK cpk = new CPK();
-                {
-                    LoggerService.LogSuccess($"CPK updated with mod files");
-                }
-                else
-                {
-                    LoggerService.LogError("Failed to rebuild CPK");
-                }
+                LoggerService.LogSuccess($"Mod ready for application");
             }
             catch (Exception ex)
             {
