@@ -152,7 +152,7 @@ namespace LibCPK
             dynamic input = value;
             byte[] someBytes = BitConverter.GetBytes(input);
             if (!isLittleEndian)
-                someBytes = someBytes.Reverse().ToArray();
+                Array.Reverse(someBytes);
 
             base.Write(someBytes);
         }
