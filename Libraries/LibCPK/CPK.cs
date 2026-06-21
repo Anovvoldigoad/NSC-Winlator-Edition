@@ -1414,6 +1414,39 @@ namespace LibCPK
         public float ufloat { get; set; }
         public string str { get; set; }
         public byte[] data { get; set; }
+
+        // Simple CPK rebuild - replace files from mod folder
+        public bool RebuildCPK(string originalCpkPath, string modFolderPath, string outputCpkPath)
+        {
+            try
+            {
+                byte[] originalData = File.ReadAllBytes(originalCpkPath);
+                CPK originalCpk = new CPK();
+                originalCpk.Read(originalData);
+                string[] modFiles = Directory.GetFiles(modFolderPath, "*", SearchOption.AllDirectories);
+                foreach (string modFile in modFiles)
+                {
+                    string relPath = Path.GetRelativePath(modFolderPath, modFile);
+                    for (int i = 0; i < originalCpk.files.Count; i++)
+                    {
+                        string cpkFileName = originalCpk.files[i].FileName;
+                        if (cpkFileName.Equals(relPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            byte[] newData = File.ReadAllBytes(modFile);
+                            originalCpk.files[i].data = newData;
+                            break;
+                        }
+                    }
+                }
+                byte[] rebuiltData = originalCpk.Build();
+                File.WriteAllBytes(outputCpkPath, rebuiltData);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         public long position { get; set; }
     }
 
@@ -1462,45 +1495,3 @@ namespace LibCPK
     }
 }
 
-        // Simple CPK rebuild - replace files from mod folder
-        public bool RebuildCPK(string originalCpkPath, string modFolderPath, string outputCpkPath)
-        {
-            try
-            {
-                // Load original CPK
-                byte[] originalData = File.ReadAllBytes(originalCpkPath);
-                CPK originalCpk = new CPK();
-                originalCpk.Read(originalData);
-
-                // Get mod files
-                string[] modFiles = Directory.GetFiles(modFolderPath, "*", SearchOption.AllDirectories);
-
-                // For each mod file, find & replace in CPK
-                foreach (string modFile in modFiles)
-                {
-                    string relPath = Path.GetRelativePath(modFolderPath, modFile);
-                    
-                    // Find matching file in original CPK
-                    for (int i = 0; i < originalCpk.files.Count; i++)
-                    {
-                        string cpkFileName = originalCpk.files[i].FileName;
-                        if (cpkFileName.Equals(relPath, StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Replace file data
-                            byte[] newData = File.ReadAllBytes(modFile);
-                            originalCpk.files[i].data = newData;
-                            break;
-                        }
-                    }
-                }
-
-                // Write modified CPK
-                byte[] rebuiltData = originalCpk.Build();
-                File.WriteAllBytes(outputCpkPath, rebuiltData);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
