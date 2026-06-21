@@ -76,7 +76,6 @@ namespace NSC.Winlator.Infrastructure
             catch (Exception ex)
             {
                 LoggerService.LogError("Failed to initialize application", ex);
-                MessageBox.Show($"Failed to initialize application: {ex.Message}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
