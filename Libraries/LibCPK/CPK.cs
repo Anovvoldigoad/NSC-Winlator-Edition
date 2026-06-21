@@ -6,6 +6,12 @@ using System.ComponentModel;
 
 namespace NSC.Winlator.Libraries.LibCPK
 {
+    public class FileEntry
+    {
+        public string? FileName { get; set; }
+        public byte[]? data { get; set; }
+    }
+
     // Stub CPK class - read-only, no write support
     // Use YACpkTool.exe for actual CPK compilation
     public class CPK
@@ -21,12 +27,6 @@ namespace NSC.Winlator.Libraries.LibCPK
         public byte[] Build()
         {
             return new byte[0];
-        }
-
-        public class FileEntry
-        {
-            public string? FileName { get; set; }
-            public byte[]? data { get; set; }
         }
     }
 }

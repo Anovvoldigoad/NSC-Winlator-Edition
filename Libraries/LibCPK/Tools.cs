@@ -18,7 +18,7 @@ namespace LibCPK
 
         }
 
-        public static bool CheckListRedundant(List<CPK.FileEntry> input)
+        public static bool CheckListRedundant(List<FileEntry> input)
         {
 
             bool result = false;
