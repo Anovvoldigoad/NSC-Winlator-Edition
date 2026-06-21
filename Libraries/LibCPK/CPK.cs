@@ -1434,6 +1434,7 @@ namespace LibCPK
             }
         }
 
+    }
     public class FileEntry
     {
         public FileEntry()
