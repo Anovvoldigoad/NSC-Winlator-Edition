@@ -42,7 +42,7 @@ namespace NSC.Winlator.Services
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(_settingsPath) ?? string.Empty);
-                string json = JsonConvert.Serialize(_settings, _jsonOptions);
+                string json = JsonConvert.SerializeObject(_settings, _jsonOptions);
                 File.WriteAllText(_settingsPath, json);
                 LoggerService.LogSuccess("Saved game settings");
             }

@@ -43,7 +43,7 @@ namespace NSC.Winlator.Services
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(_loadOrderPath) ?? string.Empty);
-                string json = JsonConvert.Serialize(_loadOrder, _jsonOptions);
+                string json = JsonConvert.SerializeObject(_loadOrder, _jsonOptions);
                 File.WriteAllText(_loadOrderPath, json);
                 LoggerService.LogInfo("Saved load order");
             }

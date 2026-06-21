@@ -48,7 +48,7 @@ namespace NSC.Winlator.Services
 
             try
             {
-                string json = JsonConvert.Serialize(profile, _jsonOptions);
+                string json = JsonConvert.SerializeObject(profile, _jsonOptions);
                 File.WriteAllText(profilePath, json);
                 LoggerService.LogSuccess($"Saved profile: {profile.Name}");
             }
