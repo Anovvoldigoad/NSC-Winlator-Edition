@@ -9,7 +9,7 @@ namespace NSC.Winlator.Services
     {
         private string _settingsPath = string.Empty;
         private GameSettings _settings = new();
-        private JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+        private JsonConvertOptions _jsonOptions = new() { WriteIndented = true };
 
         public void Initialize(string configFolder)
         {
@@ -28,7 +28,7 @@ namespace NSC.Winlator.Services
             try
             {
                 string json = File.ReadAllText(_settingsPath);
-                _settings = JsonSerializer.Deserialize<GameSettings>(json) ?? new GameSettings();
+                _settings = JsonConvert.Deserialize<GameSettings>(json) ?? new GameSettings();
                 LoggerService.LogInfo("Loaded game settings");
             }
             catch (Exception ex)
@@ -43,7 +43,7 @@ namespace NSC.Winlator.Services
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(_settingsPath) ?? string.Empty);
-                string json = JsonSerializer.Serialize(_settings, _jsonOptions);
+                string json = JsonConvert.Serialize(_settings, _jsonOptions);
                 File.WriteAllText(_settingsPath, json);
                 LoggerService.LogSuccess("Saved game settings");
             }
