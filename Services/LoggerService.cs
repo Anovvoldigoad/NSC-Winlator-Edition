@@ -106,7 +106,7 @@ namespace NSC.Winlator.Services
 
         public static List<string> GetRecentLogs(int count = 100)
         {
-            return _logBuffer.TakeLast(count).ToList();
+            return _logBuffer.Skip(Math.Max(0, _logBuffer.Count - count)).ToList();
         }
 
         public static void ClearBuffer()

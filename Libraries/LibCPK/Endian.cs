@@ -150,7 +150,7 @@ namespace LibCPK
 
         public void Write<T>(T value)
         {
-            byte[] someBytes = System.BitConverter.GetBytes((dynamic)value);
+            byte[] someBytes = System.BitConverter.GetBytes(Convert.ToUInt64(value));
             if (!isLittleEndian)
                 Array.Reverse(someBytes);
             base.Write(someBytes);
