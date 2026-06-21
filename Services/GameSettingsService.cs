@@ -8,7 +8,7 @@ namespace NSC.Winlator.Services
     {
         private string _settingsPath = string.Empty;
         private GameSettings _settings = new();
-        private JsonSerializerSettings _jsonOptions = new() { WriteIndented = true };
+        private JsonSerializerSettings _jsonOptions = new() { Formatting = Newtonsoft.Json.Formatting.Indented };
 
         public void Initialize(string configFolder)
         {
@@ -27,7 +27,7 @@ namespace NSC.Winlator.Services
             try
             {
                 string json = File.ReadAllText(_settingsPath);
-                _settings = JsonConvert.Deserialize<GameSettings>(json) ?? new GameSettings();
+                _settings = JsonConvert.DeserializeObject<GameSettings>(json) ?? new GameSettings();
                 LoggerService.LogInfo("Loaded game settings");
             }
             catch (Exception ex)

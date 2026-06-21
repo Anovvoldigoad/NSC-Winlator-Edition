@@ -20,7 +20,7 @@ namespace NSC.Winlator
                 string? input = Console.ReadLine();
                 if (string.IsNullOrEmpty(input)) continue;
 
-                string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = input.Split(' ');
                 string command = parts[0].ToLower();
                 string[] args = parts.Skip(1).ToArray();
 

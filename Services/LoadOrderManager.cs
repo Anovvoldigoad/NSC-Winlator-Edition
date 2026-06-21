@@ -7,7 +7,7 @@ namespace NSC.Winlator.Services
     {
         private string _loadOrderPath = string.Empty;
         private List<string> _loadOrder = new();
-        private JsonSerializerSettings _jsonOptions = new() { WriteIndented = true };
+        private JsonSerializerSettings _jsonOptions = new() { Formatting = Newtonsoft.Json.Formatting.Indented };
 
         public void Initialize(string configFolder)
         {
@@ -28,7 +28,7 @@ namespace NSC.Winlator.Services
             try
             {
                 string json = File.ReadAllText(_loadOrderPath);
-                _loadOrder = JsonConvert.Deserialize<List<string>>(json) ?? new List<string>();
+                _loadOrder = JsonConvert.DeserializeObject<List<string>>(json) ?? new List<string>();
                 LoggerService.LogInfo($"Loaded load order with {_loadOrder.Count} entries");
             }
             catch (Exception ex)

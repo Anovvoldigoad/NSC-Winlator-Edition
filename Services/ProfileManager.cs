@@ -7,7 +7,7 @@ namespace NSC.Winlator.Services
     public class ProfileManager
     {
         private string _profilesFolder = string.Empty;
-        private JsonSerializerSettings _jsonOptions = new() { WriteIndented = true };
+        private JsonSerializerSettings _jsonOptions = new() { Formatting = Newtonsoft.Json.Formatting.Indented };
 
         public void Initialize(string profilesFolder)
         {
@@ -30,7 +30,7 @@ namespace NSC.Winlator.Services
             try
             {
                 string json = File.ReadAllText(profilePath);
-                ProfileInfo profile = JsonConvert.Deserialize<ProfileInfo>(json) ?? new ProfileInfo { Name = profileName };
+                ProfileInfo profile = JsonConvert.DeserializeObject<ProfileInfo>(json) ?? new ProfileInfo { Name = profileName };
                 profile.Name = profileName;
                 LoggerService.LogInfo($"Loaded profile: {profileName}");
                 return profile;

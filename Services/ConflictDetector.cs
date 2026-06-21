@@ -63,7 +63,7 @@ namespace NSC.Winlator.Services
                 foreach (string file in files)
                 {
                     // Create relative path
-                    string relativePath = Path.GetRelativePath(mod.ModFolder, file);
+                    string relativePath = file.Replace(mod.ModFolder + "\\", "");
 
                     if (!fileMap.ContainsKey(relativePath))
                         fileMap[relativePath] = new List<string>();
