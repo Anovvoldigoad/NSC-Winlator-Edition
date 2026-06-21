@@ -47,21 +47,26 @@ namespace NSC.Winlator.Services
             {
                 string gameDataPath = Path.Combine(_gameFolder, "data0.cpk");
                 string backupPath = gameDataPath + ".backup";
-
-                // Backup original
                 if (File.Exists(gameDataPath) && !File.Exists(backupPath))
                 {
                     File.Copy(gameDataPath, backupPath);
                     LoggerService.LogInfo($"Backed up: {backupPath}");
                 }
-
-                // Note: actual CPK modification needs proper library
-                LoggerService.LogSuccess($"Mod ready for application");
+                CPK cpk = new CPK();
+                if (cpk.RebuildCPK(gameDataPath, modFolder, gameDataPath))
+                {
+                    LoggerService.LogSuccess($"CPK updated with mod files");
+                }
+                else
+                {
+                    LoggerService.LogError("Failed to rebuild CPK");
+                }
             }
             catch (Exception ex)
             {
                 LoggerService.LogError($"Apply failed: {ex.Message}", ex);
             }
         }
+
     }
 }
