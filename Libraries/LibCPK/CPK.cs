@@ -725,40 +725,10 @@ namespace LibCPK
         // 目前将CRICompress方法移动到了CLR类库中使用。
         unsafe public byte[] CompressCRILAYLA(byte[] input)
         {
-            unsafe
-            {
-                fixed (byte* src = input, dst = new byte[input.Length])
-                {
-                    //Move cricompress to CLR
-                    int destLength = (int)input.Length;
-
-//                     int result = LibCRIComp.CriCompression.CRIcompress(dst, &destLength, src, input.Length);
-//                     byte[] arr = new byte[destLength];
-//                     Marshal.Copy((IntPtr)dst, arr, 0, destLength);
-//                     return arr;
-//                 } 
-                    return input; // TODO: implement CRILAYLA compression
-            }
-            
-            /*unsafe
-            {
-
-                int destLength = (int)input.Length;
-                fixed (byte* src = input)
-                fixed (byte* dest = new byte[input.Length])
-                {
-
-                    destLength = CRICompress(dest, &destLength, src, input.Length);
-                    byte[] arr = new byte[destLength];
-                    Marshal.Copy((IntPtr)dest, arr, 0, destLength);
-
-                    
-                    return arr;
-                }
-            }*/
-
+            // TODO: implement CRILAYLA compression
+            // For now, return uncompressed data
+            return input;
         }
-
         public byte[] DecompressCRILAYLA(byte[] input, int USize)
         {
             byte[] result;// = new byte[USize];
