@@ -147,12 +147,12 @@ namespace LibCPK
             set { isLittleEndian = value; }
         }
 
+
         public void Write<T>(T value)
         {
-            dynamic input = value;
+            byte[] someBytes = System.BitConverter.GetBytes((dynamic)value);
             if (!isLittleEndian)
                 Array.Reverse(someBytes);
-
             base.Write(someBytes);
         }
 

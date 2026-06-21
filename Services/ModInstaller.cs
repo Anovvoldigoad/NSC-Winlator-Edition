@@ -115,7 +115,7 @@ namespace NSC.Winlator.Services
         {
             using (ZipArchive archive = ZipFile.OpenRead(zipPath))
             {
-                archive.ExtractToDirectory(extractPath, overwriteFiles: true);
+                archive.ExtractToDirectory(extractPath);
             }
             await Task.CompletedTask;
         }
