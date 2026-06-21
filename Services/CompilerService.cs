@@ -1,3 +1,4 @@
+using NSC.Winlator.Libraries.LibCPK;
 using System;
 using System.IO;
 using System.Threading.Tasks;
