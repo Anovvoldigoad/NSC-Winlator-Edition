@@ -156,7 +156,7 @@ namespace LibCPK
             base.Write(someBytes);
         }
 
-        public void Write(FileEntry entry)
+        public void Write(CPK.FileEntry entry)
         {
             if (entry.ExtractSizeType == typeof(Byte))
             {
