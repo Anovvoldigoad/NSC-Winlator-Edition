@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using NSC.Winlator.Models;
-using System.Text.Json;
 
 namespace NSC.Winlator.Services
 {
     public class ProfileManager
     {
         private string _profilesFolder = string.Empty;
-        private JsonConvertOptions _jsonOptions = new() { WriteIndented = true };
+        private JsonSerializerSettings _jsonOptions = new() { WriteIndented = true };
 
         public void Initialize(string profilesFolder)
         {

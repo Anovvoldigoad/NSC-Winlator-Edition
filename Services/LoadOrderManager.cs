@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 
 namespace NSC.Winlator.Services
 {
@@ -8,7 +7,7 @@ namespace NSC.Winlator.Services
     {
         private string _loadOrderPath = string.Empty;
         private List<string> _loadOrder = new();
-        private JsonConvertOptions _jsonOptions = new() { WriteIndented = true };
+        private JsonSerializerSettings _jsonOptions = new() { WriteIndented = true };
 
         public void Initialize(string configFolder)
         {

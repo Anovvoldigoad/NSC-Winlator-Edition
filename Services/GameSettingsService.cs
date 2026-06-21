@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using NSC.Winlator.Models;
-using System.Text.Json;
 
 namespace NSC.Winlator.Services
 {
@@ -9,7 +8,7 @@ namespace NSC.Winlator.Services
     {
         private string _settingsPath = string.Empty;
         private GameSettings _settings = new();
-        private JsonConvertOptions _jsonOptions = new() { WriteIndented = true };
+        private JsonSerializerSettings _jsonOptions = new() { WriteIndented = true };
 
         public void Initialize(string configFolder)
         {
